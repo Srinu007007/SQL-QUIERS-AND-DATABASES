@@ -1,0 +1,140 @@
+CREATE TABLE DEPARTMENT (
+  dname        varchar(25) not null,
+  dnumber      number(10) not null,
+  mgrssn      varchar2(9) not null, 
+  mgrstartdate date,
+  CONSTRAINT pk_Department primary key (dnumber),
+  CONSTRAINT uk_dname UNIQUE (dname) 
+);
+
+Table Created.
+
+SQL> desc department
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ DNAME                                     NOT NULL VARCHAR2(25)
+ DNUMBER                                   NOT NULL NUMBER(10)
+ MGRSSN                                    NOT NULL VARCHAR2(9)
+ MGRSTARTDATE                                       DATE
+
+
+
+
+CREATE TABLE EMPLOYEE (
+  fname    varchar(15) not null, 
+  minit    varchar(1),
+  lname    varchar(15) not null,
+  ssn     varchar2(9), 
+  bdate    date,
+  address  varchar(50),
+  gender   char,
+  salary   decimal(10,2),
+  superssn char(9),
+  dno      int,
+  CONSTRAINT pk_employee primary key (ssn),  
+  CONSTRAINT fk_employee_department foreign key (dno) references DEPARTMENT(dnumber)
+);
+Table Created.
+
+SQL> desc employee;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ FNAME                                     NOT NULL VARCHAR2(15)
+ MINIT                                              VARCHAR2(1)
+ LNAME                                     NOT NULL VARCHAR2(15)
+ SSN                                       NOT NULL VARCHAR2(9)
+ BDATE                                              DATE
+ ADDRESS                                            VARCHAR2(50)
+ GENDER                                             CHAR(1)
+ SALARY                                             NUMBER(10,2)
+ SUPERSSN                                           CHAR(9)
+ DNO                                                NUMBER(38)
+
+
+
+
+
+CREATE TABLE DEPENDENT (
+  essn           varchar2(9),
+  dependent_name varchar(15),
+  gender 	 char,
+  bdate          date,
+  relationship   varchar(8),
+  CONSTRAINT pk_essn_dependent_name primary key (essn,dependent_name),
+  CONSTRAINT fk_dependent_employee foreign key (essn) references EMPLOYEE(ssn)
+);
+
+Table Created.
+
+SQL> desc dependent
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ ESSN                                      NOT NULL VARCHAR2(9)
+ DEPENDENT_NAME                            NOT NULL VARCHAR2(15)
+ GENDER                                             CHAR(1)
+ BDATE                                              DATE
+ RELATIONSHIP                                       VARCHAR2(8)
+
+
+
+
+CREATE TABLE DEPT_LOCATIONS (
+  dnumber   int,
+  dlocation varchar(15), 
+  CONSTRAINT pk_dept_locations primary key (dnumber,dlocation),
+  CONSTRAINT fk_deptlocations_department foreign key (dnumber) references DEPARTMENT(dnumber)
+);
+
+SQL> desc dept_locations;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ DNUMBER                                   NOT NULL NUMBER(38)
+ DLOCATION                                 NOT NULL VARCHAR2(15)
+
+
+
+
+
+
+CREATE TABLE PROJECT (
+  pname      varchar(25) not null,
+  pnumber    int,
+  plocation  varchar(15),
+  dnum       int not null,
+  CONSTRAINT ok_project primary key (pnumber),
+  CONSTRAINT uc_pnumber unique (pname),
+  CONSTRAINT fk_project_department foreign key (dnum) references DEPARTMENT(dnumber)
+);
+
+
+SQL> desc project;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ PNAME                                     NOT NULL VARCHAR2(25)
+ PNUMBER                                   NOT NULL NUMBER(38)
+ PLOCATION                                          VARCHAR2(15)
+ DNUM                                      NOT NULL NUMBER(38)
+
+
+
+
+
+
+CREATE TABLE WORKS_ON (
+  essn   varchar2(9),
+  pno    int,
+  hours  decimal(4,1),
+  CONSTRAINT pk_worksOn primary key (essn,pno),
+  CONSTRAINT fk_workson_employee foreign key (essn) references EMPLOYEE(ssn),
+  CONSTRAINT fk_workson_project foreign key (pno) references PROJECT(pnumber)
+);
+
+Table Created.
+
+
+SQL> desc works_on;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ ESSN                                      NOT NULL VARCHAR2(9)
+ PNO                                       NOT NULL NUMBER(38)
+ HOURS                                              NUMBER(4,1)
